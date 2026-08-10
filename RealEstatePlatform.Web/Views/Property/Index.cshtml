@@ -1,0 +1,105 @@
+@model IEnumerable<RealEstatePlatform.Core.Entities.Property>
+
+@{
+    ViewData["Title"] = "Güncel İlanlar";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>🏡 Güncel Gayrimenkul İlanları</h2>
+        <a href="/Property/Create" class="btn btn-primary">+ Yeni İlan Ekle</a>
+    </div>
+
+    <div class="card shadow-sm mb-4 bg-light">
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label text-muted small">Şehir</label>
+                    <input type="text" name="city" class="form-control" placeholder="Örn: İstanbul">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label text-muted small">Min Fiyat (₺)</label>
+                    <input type="number" name="minPrice" class="form-control" placeholder="0">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label text-muted small">Max Fiyat (₺)</label>
+                    <input type="number" name="maxPrice" class="form-control" placeholder="Limit Yok">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label text-muted small">Oda Sayısı</label>
+                    <select name="roomCount" class="form-select">
+                        <option value="">Tümü</option>
+                        <option value="1+0">1+0</option>
+                        <option value="1+1">1+1</option>
+                        <option value="2+1">2+1</option>
+                        <option value="3+1">3+1</option>
+                        <option value="4+1">4+1 ve üzeri</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" name="hasParking" value="true" id="searchParking">
+                        <label class="form-check-label text-muted small" for="searchParking">
+                            Otopark Zorunlu
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-dark w-100">Ara</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        @if (!Model.Any())
+        {
+            <div class="col-12">
+                <div class="alert alert-warning text-center shadow-sm">
+                    Henüz hiç ilan eklenmemiş veya arama kriterlerinize uygun ilan bulunamadı.
+                </div>
+            </div>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        @if (item.Images != null && item.Images.Any())
+                        {
+                            <img src="@item.Images.FirstOrDefault()?.ImagePath" class="card-img-top" alt="@item.Title" style="height: 220px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <img src="https://via.placeholder.com/300x200?text=Gorsel+Yok" class="card-img-top" alt="Görsel Yok" style="height: 220px; object-fit: cover;">
+                        }
+
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">@item.Title</h5>
+                            <h6 class="card-subtitle mb-2 text-success fs-5">@item.Price.ToString("N0") ₺</h6>
+                            
+                            @if (item.Location != null)
+                            {
+                                <p class="text-muted small mb-2">
+                                    📍 @item.Location.City / @item.Location.District
+                                </p>
+                            }
+
+                            <p class="card-text text-muted">
+                                🚪 @item.RoomCount Oda | 📐 @item.SquareMeters m²
+                                @if (item.HasParking)
+                                {
+                                    <span class="badge bg-info text-dark ms-1">🚗 Otoparklı</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="card-footer bg-white border-top-0">
+                            <a href="/Property/Detail/@item.Id" class="btn btn-outline-secondary w-100">İlanı İncele</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

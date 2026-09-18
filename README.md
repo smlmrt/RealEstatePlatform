@@ -53,7 +53,7 @@ git clone https://github.com/smlmrt/RealEstatePlatform.git
 cd RealEstatePlatform
 dotnet restore
 dotnet ef database update --project RealEstatePlatform.DataAccess --startup-project RealEstatePlatform.Web
-dotnet run --project RealEstatePlatform.Web
+cd RealEstatePlatform.Web && dotnet run
 ```
 
 Uygulama `http://localhost:5174` adresinde açılır.
